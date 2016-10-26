@@ -1,3 +1,5 @@
+require 'net/https'
+
 class DataCenter
   def initialize(user_id)
     @user_id = user_id
@@ -51,7 +53,17 @@ class DataCenter
   private
   # mock request
   def request(instruction, data)
-    # do nothing
-    {}
+
+    uri = URI.parse("https://localhost:8080")
+    http = Net::HTTP.new(uri.host, uri.port)
+
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+    req = Net::HTTP::Post.new(uri.path)
+    req.set_form_data({'name' => 'hoge', 'content' => 'hogehoge'})
+
+    res = http.request(req)
+
   end
 end
