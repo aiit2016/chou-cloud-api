@@ -11,12 +11,14 @@ class DataCenter
     [
       {
         instance_id: 11,
+        user_id: @user_id,
         status: 'running',
         memory: 1,
         cpu: 1
       },
       {
         instance_id: 22,
+        user_id: @user_id,
         status: 'creating',
         memory: 2,
         cpu: 2
@@ -37,7 +39,13 @@ class DataCenter
       ssh_key_id: ssh_key_id
     })
 
-    12
+    {
+      id: 12,
+      user_id: @user_id,
+      memory: memory,
+      cpu: cpu,
+      ssh_key_id: ssh_key_id
+    }
   end
 
   private
