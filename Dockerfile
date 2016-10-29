@@ -1,2 +1,2 @@
-FROM erikap/ruby-sinatra
+FROM buckarooch/ruby-sinatra
 
