@@ -6,26 +6,13 @@ class DataCenter
   end
 
   def get_all()
-    response = request(:get_all, {
-      user_id: @user_id
-    })
+    response = request_get('instances/')
+    return response
+  end
 
-    [
-      {
-        instance_id: 11,
-        user_id: @user_id,
-        status: 'running',
-        memory: 1,
-        cpu: 1
-      },
-      {
-        instance_id: 22,
-        user_id: @user_id,
-        status: 'creating',
-        memory: 2,
-        cpu: 2
-      },
-    ]
+  def get_one(id)
+    response = request_get("instances/#{id}")
+    return response
   end
 
   # request creation
@@ -33,37 +20,96 @@ class DataCenter
   # @param cpu [Integer]
   # @param ssh_key_id [Integer]
   # @return [Integer] vm_id
-  def create_instance(memory, cpu, ssh_key_id)
-    response = request(:create_vm, {
+  def create_instance(name, memory, cpu, ssh_key_id)
+    response = request_post('/instances', {
       user_id: @user_id,
-      memory: memory,
-      cpu: cpu,
+      name: name,
+      memorySize: memory,
+      cpuSize: cpu,
+      machineId: 1,
+      status: 'running?',
       ssh_key_id: ssh_key_id
     })
 
     {
-      id: 12,
-      user_id: @user_id,
-      memory: memory,
-      cpu: cpu,
-      ssh_key_id: ssh_key_id
+      id: response['id'],
+      name: response['name'],
+      memory: response['memorySize'],
+      cpu: response['cpuSize'],
+      status: response['status']
     }
+  end
+
+  def update_instance(id, update_data)
+    data = get_one(id)
+
+    data['name'] = update_data[:name] || data['name']
+    data['memorySize'] = update_data[:memory] || data['memorySize']
+    data['cpuSize'] = update_data[:cpu] || data['cpuSize']
+
+    response = request_put("/instances/#{id}", data)
+
+    {
+      id: response['id'],
+      name: response['name'],
+      memory: response['memorySize'],
+      cpu: response['cpuSize'],
+      status: response['status']
+    }
+  end
+
+  def delete_instance(id)
+    response = request_delete("/instances/#{id}")
+
+    if response.code === '200'
+      {message: 'OK'}
+    else
+      {message: 'NG'}
+    end
   end
 
   private
   # mock request
-  def request(instruction, data)
-
-    uri = URI.parse("https://localhost:8080")
+  def request_get(path)
+    uri = URI.parse("http://datacenter:8080/#{path}")
     http = Net::HTTP.new(uri.host, uri.port)
 
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    req = Net::HTTP::Post.new(uri.path)
-    req.set_form_data({'name' => 'hoge', 'content' => 'hogehoge'})
+    req = Net::HTTP::Get.new(uri.path)
 
     res = http.request(req)
+    JSON.parse(res.body)
+  end
 
+  def request_post(path, data)
+    uri = URI.parse("http://datacenter:8080/#{path}")
+    http = Net::HTTP.new(uri.host, uri.port)
+
+    req = Net::HTTP::Post.new(uri.path)
+    req["Content-Type"] = 'application/json'
+    req.body = data.to_json
+
+    res = http.request(req)
+    JSON.parse(res.body)
+  end
+
+  def request_put(path, data)
+    uri = URI.parse("http://datacenter:8080/#{path}")
+    http = Net::HTTP.new(uri.host, uri.port)
+
+    req = Net::HTTP::Put.new(uri.path)
+    req["Content-Type"] = 'application/json'
+    req.body = data.to_json
+
+    res = http.request(req)
+    JSON.parse(res.body)
+  end
+
+  def request_delete(path)
+    uri = URI.parse("http://datacenter:8080/#{path}")
+    http = Net::HTTP.new(uri.host, uri.port)
+
+    req = Net::HTTP::Delete.new(uri.path)
+
+    http.request(req)
   end
 end
