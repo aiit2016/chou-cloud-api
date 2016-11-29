@@ -59,7 +59,7 @@ class DataCenter
   end
 
   def start_instance(id)
-    response = request_post("/instances/#{id}/up", {})
+    response = request_post("/instances/#{id}/up/", {})
     {
       id: response['id'],
       name: response['name'],
@@ -70,7 +70,7 @@ class DataCenter
   end
 
   def stop_instance(id)
-    response = request_post("/instances/#{id}/down", {})
+    response = request_post("/instances/#{id}/down/", {})
     {
       id: response['id'],
       name: response['name'],
