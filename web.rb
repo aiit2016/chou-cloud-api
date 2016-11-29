@@ -63,6 +63,20 @@ put '/instances/:id' do
   data.to_json
 end
 
+post '/instances/:id/up' do
+  instance_id = params[:id]
+  data = dc.start_instance(instance_id)
+
+  data.to_json
+end
+
+post '/instances/:id/down' do
+  instance_id = params[:id]
+  data = dc.sop_instance(instance_id)
+
+  data.to_json
+end
+
 delete '/instances/:id' do
   param = JSON.parse(request.body.read)
   instance_id = params[:id]

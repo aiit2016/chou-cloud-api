@@ -58,6 +58,28 @@ class DataCenter
     }
   end
 
+  def start_instance(id)
+    response = request_post("/instances/#{id}/up", {})
+    {
+      id: response['id'],
+      name: response['name'],
+      memory: response['memorySize'],
+      cpu: response['cpuSize'],
+      status: response['status']
+    }
+  end
+
+  def stop_instance(id)
+    response = request_post("/instances/#{id}/down", {})
+    {
+      id: response['id'],
+      name: response['name'],
+      memory: response['memorySize'],
+      cpu: response['cpuSize'],
+      status: response['status']
+    }
+  end
+
   def delete_instance(id)
     response = request_delete("/instances/#{id}")
 
