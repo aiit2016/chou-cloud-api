@@ -8,6 +8,12 @@ before do
   content_type 'application/json'
 end
 
+get '/' do
+  @instance = data
+  content_type 'text/html'
+  erb :index
+end
+
 # vm list
 #
 # vm create

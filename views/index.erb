@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <mata charset="utf-8">
+  <title>sinatra</title>
+</head>
+<body>
+  <form action="confirm" method="POST">
+    <div>
+      param:<input type="text" name="email" value="">
+    </div>
+    <div>
+      <input type="submit" value="create">
+    </div>
+  </form>
+  <form action="confirm" method="POST">
+    <div>
+      param:<input type="text" name="email" value="">
+    </div>
+    <div>
+      <input type="submit" value="start">
+    </div>
+  </form>
+  <form action="confirm" method="POST">
+    <div>
+      param:<input type="text" name="email" value="">
+    </div>
+    <div>
+      <input type="submit" value="stop">
+    </div>
+  </form>
+  <form action="confirm" method="POST">
+    <div>
+      param:<input type="text" name="email" value="">
+    </div>
+    <div>
+      <input type="submit" value="delete">
+    </div>
+  </form>
+    <h1>list</h1>
+    <ul>
+        <% @instance.each do |instance| %>
+        <li instance-id= "<%= instance.id %>">
+            <%= instance.body %>
+        </li>
+        <% end %>
+    </ul>
+</body>
+</html>
